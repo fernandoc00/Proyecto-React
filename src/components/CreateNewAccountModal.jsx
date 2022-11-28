@@ -66,6 +66,19 @@ function CreateNewAccountModal({
   );
 }
 
+
+export function CreateNewAccount({setCreateModalOpen}) {
+  return (
+    <Button
+    color="secondary"
+    onClick={() => setCreateModalOpen(true)}
+    variant="contained"
+  >
+    Create New Account
+  </Button>
+  );
+}
+
 CreateNewAccountModal.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
@@ -81,3 +94,4 @@ CreateNewAccountModal.defaultProps = {
 };
 
 export default CreateNewAccountModal;
+

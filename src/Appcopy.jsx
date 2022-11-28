@@ -9,16 +9,15 @@ import './Appcopy.css';
 import {
   Box,
   Button,
-  IconButton,
-  Tooltip,
 } from '@mui/material';
-import { Edit } from '@mui/icons-material';
 import { data } from './makeData';
 import logo from './assets/logo.png';
 import ExportButtons from './components/ExportButtons';
 import CreateNewAccountModal from './components/CreateNewAccountModal';
+import CreateNewAccount from './components/CreateNewAccountModal';
 import DeleteAccountModal from './components/DeleteAccountModal';
 import './App.css';
+import EditAccountModal from './components/EditAccountModal';
 
 const getLocalItems = () => {
   const list = localStorage.getItem('lists');
@@ -151,11 +150,7 @@ function Example() {
         renderRowActions={({ row, table }) => (
           
           <Box sx={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <Tooltip arrow placement="left" title="Edit">
-              <IconButton onClick={() => table.setEditingRow(row)}>
-                <Edit />
-              </IconButton>
-            </Tooltip>
+            <EditAccountModal table={table} row={row}/>
             <DeleteAccountModal handleDeleteRow={handleDeleteRow} row={row}/>
           </Box>
         )}
@@ -173,7 +168,7 @@ function Example() {
         <img src={logo} width="100px" alt="Logotipo Wishlist" style={{display:'flex'}}/>
         
       </div>
-
+            
             <Button
               color="secondary"
               onClick={() => setCreateModalOpen(true)}
