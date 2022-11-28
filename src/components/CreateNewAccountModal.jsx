@@ -43,11 +43,16 @@ function CreateNewAccountModal({
                 key={column.accessorKey}
                 label={column.header}
                 name={column.accessorKey}
-                onChange={
-                  (e) => setValues({ ...values, [e.target.name]: e.target.value })
-                }
+                onChange={(e) => setValues({
+                  ...values,
+                  [e.target.name]: e.target.value,
+                })}
                 onKeyUp={(event) => {
-                  if (event.key === 'Enter' && document.getElementById('name').value.length > 0) {
+                  if (
+                    event.key === 'Enter'
+                                        && document.getElementById('name').value
+                                          .length > 0
+                  ) {
                     handleSubmit();
                   }
                 }}
@@ -58,7 +63,11 @@ function CreateNewAccountModal({
       </DialogContent>
       <DialogActions sx={{ p: '1.25rem' }}>
         <Button onClick={onClose}>Cancel</Button>
-        <Button color="secondary" onClick={handleSubmit} variant="contained">
+        <Button
+          color="secondary"
+          onClick={handleSubmit}
+          variant="contained"
+        >
           Create New Wish
         </Button>
       </DialogActions>
@@ -66,16 +75,15 @@ function CreateNewAccountModal({
   );
 }
 
-
-export function CreateNewAccount({setCreateModalOpen}) {
+export function CreateNewAccount({ setCreateModalOpen }) {
   return (
     <Button
-    color="secondary"
-    onClick={() => setCreateModalOpen(true)}
-    variant="contained"
-  >
-    Create New Account
-  </Button>
+      color="secondary"
+      onClick={() => setCreateModalOpen(true)}
+      variant="contained"
+    >
+      Create New Account
+    </Button>
   );
 }
 
@@ -94,4 +102,3 @@ CreateNewAccountModal.defaultProps = {
 };
 
 export default CreateNewAccountModal;
-
