@@ -26,69 +26,334 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import WishList from './components/WishList';
-import 'bootstrap/dist/js/bootstrap.min';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SendIcon from '@mui/icons-material/Send';
-import WishInput from './components/WishInput';
-import logo from './assets/logo.png';
+            <pre class="prettyprint source linenums"><code>import React, { useCallback, useMemo, useState, useEffect } from 'react'
+import MaterialReactTable from 'material-react-table'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { ExportToCsv } from 'export-to-csv'
+import { Box, Button } from '@mui/material'
+import { data } from './makeData'
+import logo from './assets/logo.png'
+import ExportButtons from './components/ExportButtons'
+import CreateNewAccountModal from './components/CreateNewAccountModal'
+import DeleteAccountModal from './components/DeleteAccountModal'
+import './App.css'
+import EditAccountModal from './components/EditAccountModal'
 
-const initialWishes = [
-  { id: uuidv4(), text: 'Aprender React', done: false },
-  { id: uuidv4(), text: 'Dar de alta a los alumnos en Moodle', done: false },
-  { id: uuidv4(), text: 'Preparar apuntes', done: false },
-  { id: uuidv4(), text: 'Desayunar', done: true },
-];
 
+      /**
+ * getLocalItems
+ * @constant getLocalItems
+ * @type {state}
+ * @default data
+ * @return data || localStorage.getItem('lists)
+ * @description Con esta constante obtendremos el valor acumulado de la lista del localstorage o devolveremos la acumulada en la App si no existe ninguna
+ */ 
+const getLocalItems = () => {
+    const list = localStorage.getItem('lists')
+
+    if (list) {
+        return JSON.parse(localStorage.getItem('lists'))
+    }
+
+    return data
+}
+
+/** This is a description of the app function. */
 /**
+ * 
+ *  @fileoverview App app, lista de tareas para un usuario
+
+ *
+
+ * @version                               2.2
+
+ *
+
+ * @author                 Fernando Caravaca &lt;info@fernandocaravaca.com>
+
+ * @copyright           fernandocaravaca.com
+
+ *
+
+ * @description
+
+ * v2.2 – Se mejoró la APP tras confirmar que el lint y el prettier no daban fallo
+ * 
+ * v2.0 – Se modularizó la APP y se crearon los distintos componentes Create, Delete, Edit y Export
+ *
+ * v1.1 – Se desarrollo la tabla del Material React Table
+ *
+ * ----
+
+ * La primera versión de Wishlist fue escrita por Fernando Caravaca
+
  * Manage a wishlist
  * @returns HTML with a WishList
  */
-function App() {
-  const [wishes, setWishes] = useState(initialWishes);
-  return (
-    &lt;div className="container-fluid">
-      &lt;img src={logo} width="100px" />
-      &lt;h3 style={{ marginTop: 20, fontSize: 20 }}>Welcome to my Wishlist&lt;/h3>
-      &lt;WishInput
-        onNewWish={(NewWish) => {
-          console.log('Se ha lanzado el evento');
-          setWishes([...wishes, NewWish]);
-        }}
-      />
-      &lt;WishList
-        wishes={wishes}
-        onUpdateWish={(updatedWish) => {
-          /* const updatedWishes = wishes.map((wish) => {
-        if (wish.id === updatedWish.id){
-          return updatedWish;
-        }
-        return wish;
-        }); */
-          const updatedWishes = [...wishes];
-          const modifyWish = updatedWishes.find((wish) => wish.id === updatedWish.id);
-          modifyWish.done = updatedWish.done;
 
-          setWishes(updatedWishes);
-        }}
-      />
-      &lt;Button variant="outlined" startIcon={&lt;DeleteIcon />}>
-        Delete
-      &lt;/Button>
-      &lt;Button variant="contained" endIcon={&lt;SendIcon />}>
-        Send
-      &lt;/Button>
+/**
 
-    &lt;/div>
-  );
+ * Función principal para lanzar el proyecto
+
+ * 
+
+ * @return  {html}
+
+ */
+function Example() {
+
+
+
+/**
+ * CreateModal
+ * @constant
+ * @type {useState}
+ * @default useState(false)
+ * @description Con esta constante obtenemos el estado inicial para createModalopen
+ */
+    const [createModalOpen, setCreateModalOpen] = useState(false)
+    /**
+ * setTableData
+ * @constant setTableData
+ * @type {useState}
+ * @default useState(getLocalItems)
+ * @description Con esta constante obtenemos el estado inicial para setTableData, que en este caso será las variables almacenadas en LocalStorage
+ */
+    const [tableData, setTableData] = useState(getLocalItems)
+    /**
+ * setRowSelection
+ * @constant setRowSelection
+ * @type {useState}
+ * @default useState(false)
+ * @description Con esta constante obtenemos el estado inicial para setRowSelection
+ */
+    const [rowSelection, setRowSelection] = useState({})
+    /**
+ * tableInstanceRef
+ * @constant 
+ * @type {useState}
+ * @default useState(getLocalItems)
+ * @description Con esta constante obtenemos el estado inicial para tableInstanceRef
+ */
+    const tableInstanceRef = useState(getLocalItems)
+/**
+ * handleDeleteRow
+ * @constant handleDeleteRow
+ * @type {useCallback}
+ * @default tableData
+ * @return tableData
+ * @description Con esta constante obtenemos el estado inicial para handleDeleteRow
+ */
+    const handleDeleteRow = useCallback(
+        (row) => {
+            console.log(row)
+            if (
+                !window.confirm(
+                    `Are you sure you want to delete ${row.getValue('deseo')}`
+                )
+            ) {
+                return
+            }
+            // send api delete request here, then refetch or update local table data for re-render
+            tableData.splice(row.index, 1)
+            localStorage.setItem('lists', JSON.stringify(tableData))
+            setTableData([...tableData])
+        },
+        [tableData]
+    )
+
+
+      /**
+ * handleCreateNewRow
+ * @constant handleCreateNewRow
+ * @type {tableData}
+ * @default tableData
+ * @return tableData
+ * @description Con esta constante insertaremos un nuevo valor para nuestra tabla
+ */ 
+    const handleCreateNewRow = (values) => {
+        tableData.push(values)
+        setTableData([...tableData])
+    }
+    
+      /**
+ * handleSaveRowEdits
+ * @constant handleSaveRowEdits
+ * @type {tableData}
+ * @default tableData
+ * @return tableData
+ * @description Con esta constante crearemos un nuevo valor para nuestra tabla y lo guardaremos
+ */ 
+    const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
+        tableData[row.index] = values
+        localStorage.setItem('lists', JSON.stringify(tableData))
+        setTableData([...tableData])
+        exitEditingMode() // required to exit editing mode and close modal
+    }
+      /**
+ * handleSaveRowEdits
+ * @constant columns
+ * @type {object}
+ * @default useMemo
+ * @description Con esta constante defineremos nuestra única columna disponible
+ */ 
+    const columns = useMemo(() => [
+        {
+            accessorKey: 'deseo',
+            header: 'Deseo',
+            size: 140,
+        },
+    ])
+      /**
+ * csvOptions
+ * @constant csvOptions
+ * @type {object}
+ * @description Con esta constante definimos las opciones para exportar nuestra tabla a fichero csv
+ */ 
+    const csvOptions = {
+        fieldSeparator: ',',
+        quoteStrings: '"',
+        decimalSeparator: '.',
+        showLabels: true,
+        useBom: true,
+        useKeysAsHeaders: false,
+        headers: columns.map((c) => c.header),
+    }
+
+          /**
+ * csvExporter
+ * @constant csvExporter
+ * @type {object}
+ * @description Con esta constante llamaremos al plugin exporttocsv y le pasaremos las opciones definidas anteriormente
+ */ 
+    const csvExporter = new ExportToCsv(csvOptions)
+
+    useEffect(() => {
+        localStorage.setItem('lists', JSON.stringify(tableData))
+    }, [tableData])
+
+    return (
+        &lt;>
+            &lt;div className="inner-header flex">
+                &lt;h1>Welcome to my Wishlist&lt;/h1>
+            &lt;/div>
+            &lt;div className="container-fluid">
+                &lt;img
+                    src={logo}
+                    width="150px"
+                    alt="Logotipo Wishlist"
+                    style={{ marginBottom: '50px' }}
+                />
+            &lt;/div>
+            &lt;MaterialReactTable
+                className="tabla"
+                displayColumnDefOptions={{
+                    'mrt-row-actions': {
+                        muiTableHeadCellProps: {
+                            align: 'center',
+                        },
+                        size: 0,
+                    },
+                }}
+                autoResetPageIndex={false}
+                columns={columns}
+                data={tableData}
+                enableRowSelection
+                muiSelectCheckboxProps={() => ({
+                    color: 'error',
+                })}
+                editingMode="modal" // default
+                enableColumnOrdering
+                enableRowOrdering
+                enableSorting={false}
+                enableEditing
+                onEditingRowSave={handleSaveRowEdits}
+                enableRowDragging
+                enableRowNumbers
+                rowNumberMode="static"
+                muiTableBodyProps={{
+                    sx: {
+                        // stripe the rows, make odd rows a darker color
+                    },
+                }}
+                muiTableBodyRowProps={({ row }) => ({
+                    onClick: (event) => {
+                        console.info(event, row.id)
+                    },
+                    sx: {
+                        cursor: 'pointer', // you might want to change the cursor too when adding an onClick
+                    },
+                })}
+                muiTableBodyRowDragHandleProps={({ table }) => ({
+                    onDragEnd: () => {
+                        const { draggingRow, hoveredRow } = table.getState()
+                        if (hoveredRow &amp;&amp; draggingRow) {
+                            tableData.splice(
+                                hoveredRow.index,
+                                0,
+                                tableData.splice(draggingRow.index, 1)[0]
+                            )
+                            setTableData([...tableData])
+                        }
+                    },
+                })}
+                renderRowActions={({ row, table }) => (
+                    &lt;Box
+                        sx={{
+                            display: 'flex',
+                            gap: '1rem',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        &lt;EditAccountModal table={table} row={row} />
+                        &lt;DeleteAccountModal
+                            handleDeleteRow={handleDeleteRow}
+                            row={row}
+                        />
+                    &lt;/Box>
+                )}
+                onRowSelectionChange={setRowSelection} // hoist internal state to your own state (optional)
+                state={{ rowSelection }} // manage your own state, pass it back to the table (optional)
+                tableInstanceRef={tableInstanceRef} // get a reference to the underlying table instance (optional)
+                renderTopToolbarCustomActions={({ table }) => (
+                    &lt;Box
+                        sx={{
+                            display: 'flex',
+                            gap: '1rem',
+                            p: '0.5rem',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        &lt;Button
+                            color="secondary"
+                            onClick={() => setCreateModalOpen(true)}
+                            variant="contained"
+                        >
+                            Create New Account
+                        &lt;/Button>
+                        &lt;div>
+                            &lt;ExportButtons
+                                table={table}
+                                csvOptions={csvOptions}
+                                csvExporter={csvExporter}
+                            />
+                        &lt;/div>
+                    &lt;/Box>
+                )}
+            />
+
+            &lt;CreateNewAccountModal
+                columns={columns}
+                open={createModalOpen}
+                onClose={() => setCreateModalOpen(false)}
+                onSubmit={handleCreateNewRow}
+            />
+        &lt;/>
+    )
 }
 
-export default App;
+// example of creating a mui dialog modal for creating new rows
+export default Example
 </code></pre>
         </article>
     </section>
@@ -99,13 +364,13 @@ export default App;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#Example">Example</a></li><li><a href="global.html#WishList">WishList</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#columns">columns</a></li><li><a href="global.html#CreateNewAccountModal">CreateNewAccountModal</a></li><li><a href="global.html#csvExporter">csvExporter</a></li><li><a href="global.html#csvOptions">csvOptions</a></li><li><a href="global.html#DeleteAccountModal">DeleteAccountModal</a></li><li><a href="global.html#EditAccountModal">EditAccountModal</a></li><li><a href="global.html#Example">Example</a></li><li><a href="global.html#ExportButtons">ExportButtons</a></li><li><a href="global.html#getLocalItems">getLocalItems</a></li><li><a href="global.html#handleCreateNewRow">handleCreateNewRow</a></li><li><a href="global.html#handleDeleteRow">handleDeleteRow</a></li><li><a href="global.html#handleExportRows">handleExportRows</a></li><li><a href="global.html#handleSaveRowEdits">handleSaveRowEdits</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#setRowSelection">setRowSelection</a></li><li><a href="global.html#setTableData">setTableData</a></li><li><a href="global.html#setValues">setValues</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Mon Nov 28 2022 20:29:05 GMT+0100 (hora estándar de Europa central)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Mon Nov 28 2022 23:27:14 GMT+0100 (hora estándar de Europa central)
 </footer>
 
 <script> prettyPrint(); </script>

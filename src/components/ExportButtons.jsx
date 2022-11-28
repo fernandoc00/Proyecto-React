@@ -5,11 +5,62 @@ import { Button } from '@mui/material'
 import PropTypes from 'prop-types'
 import { data } from '../makeData'
 
+
+/** This is a description of the export buttons. */
+/**
+ * 
+ *  @fileoverview ExportButtons.jsx, botones para exportar a CSV
+
+ *
+
+ * @version  2.2
+
+ *
+
+ * @author                 Fernando Caravaca <info@fernandocaravaca.com>
+
+ * @copyright           fernandocaravaca.com
+
+ *
+
+ * @description
+
+ * Se desarrolló el componente donde aparecen los 4 botones con distintas opciones para exportar el código a formato csv. 
+Cada botón ofrece al usuario distintas formas para exportar la tabla de deseos a formato CSV. Toda la tabla, solo la 
+vista que se está mostrando, las filas seleccionadas, etc..
+
+ * Botones para exportar
+ * @returns HTML with Buttons
+ */
+
+
+/**
+
+ * Función principal que mostrará los botones de exportación
+
+ * 
+
+ * @return  {html}
+
+ */
 function ExportButtons({ table, csvExporter }) {
+    /**
+ * handleExportRows
+ * @constant handleExportRows
+ * @type {function}
+ * @default rows
+ * @description Con esta constante recogemos las filas para exportar
+ */
     const handleExportRows = (rows) => {
         csvExporter.generateCsv(rows.map((row) => row.original))
     }
-
+    /**
+ * handleExportRows
+ * @constant handleExportRows
+ * @type {function}
+ * @default 
+ * @description Con esta constante exportamos nuestros datos de la tabla a csv
+ */
     const handleExportData = () => {
         csvExporter.generateCsv(data)
     }
