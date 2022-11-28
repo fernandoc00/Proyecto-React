@@ -8,6 +8,7 @@ export const data: Person[] = [
     email: 'Jerod14@hotmail.com',
     age: 19,
     state: 'Ohio',
+    done:true,
   },
   {
     id: '08m6rx',
@@ -16,6 +17,7 @@ export const data: Person[] = [
     email: 'Hugh.Dach79@hotmail.com',
     age: 37,
     state: 'Rhode Island',
+    done:true,
   },
   {
     id: '5ymtrc',
@@ -24,6 +26,7 @@ export const data: Person[] = [
     email: 'Camden.Macejkovic@yahoo.com',
     age: 20,
     state: 'California',
+    done:true,
   },
   {
     id: 'ek5b97',
@@ -32,6 +35,7 @@ export const data: Person[] = [
     email: 'Eric0@yahoo.com',
     age: 38,
     state: 'Montana',
+    done:true,
   },
   {
     id: 'xxtydd',
@@ -40,6 +44,7 @@ export const data: Person[] = [
     email: 'Ericka_Mueller52@yahoo.com',
     age: 19,
     state: 'Colorado',
+    done:true,
   },
   {
     id: 'wzxj9m',
@@ -48,6 +53,7 @@ export const data: Person[] = [
     email: 'Veda_Feeney@yahoo.com',
     age: 34,
     state: 'New York',
+    done:true,
   },
   {
     id: '21dwtz',
@@ -56,6 +62,7 @@ export const data: Person[] = [
     email: 'Melvin.Pacocha@yahoo.com',
     age: 23,
     state: 'Montana',
+    done:true,
   },
   {
     id: 'o8oe4k',
@@ -64,6 +71,7 @@ export const data: Person[] = [
     email: 'Delfina12@gmail.com',
     age: 25,
     state: 'Nebraska',
+    done:true,
   },
 ];
 

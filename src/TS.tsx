@@ -5,6 +5,7 @@ export type Person = {
   email: string;
   age: number;
   state: string;
+  done: boolean;
 };
 
 

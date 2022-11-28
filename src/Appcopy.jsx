@@ -11,22 +11,22 @@ import {
   Button,
   IconButton,
   Tooltip,
-  Checkbox,
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { data } from './makeData';
 import logo from './assets/logo.png';
 import ExportButtons from './components/ExportButtons';
 import CreateNewAccountModal from './components/CreateNewAccountModal';
+import DeleteAccountModal from './components/DeleteAccountModal';
 import './App.css';
 
 const getLocalItems = () => {
   const list = localStorage.getItem('lists');
-  console.log(list);
 
-  if (list) {
+  if (list) 
     return JSON.parse(localStorage.getItem('lists'));
-  }
+  
+  else
   return data;
 };
 
@@ -35,6 +35,20 @@ function Example() {
   const [tableData, setTableData] = useState(getLocalItems);
   const [rowSelection, setRowSelection] = useState({});
   const tableInstanceRef = useRef(null);
+
+  const handleDeleteRow = useCallback(
+    (row) => {
+      if (
+        !confirm(`Are you sure you want to delete ${row.getValue('deseo')}`)
+      ) {
+        return;
+      }
+      //send api delete request here, then refetch or update local table data for re-render
+      tableData.splice(row.index, 1);
+      setTableData([...tableData]);
+    },
+    [tableData],
+  );
 
   const handleCreateNewRow = (values) => {
     tableData.push(values);
@@ -48,18 +62,7 @@ function Example() {
     exitEditingMode(); // required to exit editing mode and close modal
   };
 
-  const handleDeleteRow = useCallback(
-    (row) => {
-      if (
-        window.confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)
-      ) {
-        return;
-      }
-      tableData.splice(row.index, 1);
-      setTableData([...tableData]);
-    },
-    [tableData],
-  );
+
 
   const columns = useMemo(
     () => [
@@ -82,6 +85,8 @@ function Example() {
   };
 
   const csvExporter = new ExportToCsv(csvOptions);
+
+  
   useEffect(() => {
     localStorage.setItem('lists', JSON.stringify(tableData));
   }, [tableData]);
@@ -89,11 +94,9 @@ function Example() {
   return (
 
     <>
-      <div className="container-fluid">
-        <img src={logo} width="100px" alt="Logotipo Wishlist" />
-        <h3 style={{ marginTop: 20, fontSize: 20 }}>Welcome to my Wishlist</h3>
-      </div>
+
       <MaterialReactTable
+        className="tabla"
         displayColumnDefOptions={{
           'mrt-row-actions': {
             muiTableHeadCellProps: {
@@ -106,6 +109,9 @@ function Example() {
         columns={columns}
         data={tableData}
         enableRowSelection
+        muiSelectCheckboxProps={() => ({
+          color: 'error',
+        })}
         editingMode="modal" // default
         enableColumnOrdering
         enableRowOrdering
@@ -115,6 +121,11 @@ function Example() {
         enableRowDragging
         enableRowNumbers
         rowNumberMode="static"
+        muiTableBodyProps={{
+          sx: {
+            // stripe the rows, make odd rows a darker color
+          },
+        }}
         muiTableBodyRowProps={({ row }) => ({
           onClick: (event) => {
             console.info(event, row.id);
@@ -137,18 +148,14 @@ function Example() {
           },
         })}
         renderRowActions={({ row, table }) => (
+          
           <Box sx={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <Checkbox defaultChecked />
             <Tooltip arrow placement="left" title="Edit">
               <IconButton onClick={() => table.setEditingRow(row)}>
                 <Edit />
               </IconButton>
             </Tooltip>
-            <Tooltip arrow placement="right" title="Delete">
-              <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                <Delete />
-              </IconButton>
-            </Tooltip>
+            <DeleteAccountModal handleDeleteRow={handleDeleteRow} row={row}/>
           </Box>
         )}
         onRowSelectionChange={setRowSelection} // hoist internal state to your own state (optional)
@@ -161,6 +168,10 @@ function Example() {
               display: 'flex', gap: '1rem', p: '0.5rem', flexWrap: 'wrap',
             }}
           >
+                  <div className="container-fluid">
+        <img src={logo} width="100px" alt="Logotipo Wishlist" style={{display:'flex'}}/>
+        
+      </div>
 
             <Button
               color="secondary"
