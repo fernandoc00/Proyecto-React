@@ -12,7 +12,7 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { Edit } from '@mui/icons-material';
 import { data } from './makeData';
 import logo from './assets/logo.png';
 import ExportButtons from './components/ExportButtons';
@@ -34,7 +34,7 @@ function Example() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(getLocalItems);
   const [rowSelection, setRowSelection] = useState({});
-  const tableInstanceRef = useRef(null);
+  const tableInstanceRef = useState(getLocalItems);
 
   const handleDeleteRow = useCallback(
     (row) => {
@@ -45,6 +45,7 @@ function Example() {
       }
       //send api delete request here, then refetch or update local table data for re-render
       tableData.splice(row.index, 1);
+      localStorage.setItem('lists', JSON.stringify(tableData));
       setTableData([...tableData]);
     },
     [tableData],
@@ -57,7 +58,7 @@ function Example() {
 
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
     tableData[row.index] = values;
-
+    localStorage.setItem('lists', JSON.stringify(tableData));
     setTableData([...tableData]);
     exitEditingMode(); // required to exit editing mode and close modal
   };
@@ -86,7 +87,7 @@ function Example() {
 
   const csvExporter = new ExportToCsv(csvOptions);
 
-  
+
   useEffect(() => {
     localStorage.setItem('lists', JSON.stringify(tableData));
   }, [tableData]);
@@ -138,12 +139,12 @@ function Example() {
           onDragEnd: () => {
             const { draggingRow, hoveredRow } = table.getState();
             if (hoveredRow && draggingRow) {
-              data.splice(
+              tableData.splice(
                 hoveredRow.index,
                 0,
-                data.splice(draggingRow.index, 1)[0],
+                tableData.splice(draggingRow.index, 1)[0],
               );
-              setTableData([...data]);
+              setTableData([...tableData]);
             }
           },
         })}
