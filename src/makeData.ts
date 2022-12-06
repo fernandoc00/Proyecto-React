@@ -2,28 +2,28 @@ import { Person } from './TS';
 
 export const data: Person[] = [
   {
-    deseo: 'Lavar la ropa',
+    wish: 'Lavar la ropa',
   },
   {
-    deseo: 'Comprar el pan',
+    wish: 'Comprar el pan',
   },
   {
-    deseo: 'Arreglar ordenador',
+    wish: 'Arreglar ordenador',
   },
   {
-    deseo: 'Tareas proyecto React',
+    wish: 'Tareas proyecto React',
   },
   {
-    deseo: 'Configurar componente para eliminar',
+    wish: 'Configurar componente para eliminar',
   },
   {
-    deseo: 'Diseñar web de Miguel',
+    wish: 'Diseñar web de Miguel',
   },
   {
-    deseo: 'Ver videos de PHP',
+    wish: 'Ver videos de PHP',
   },
   {
-    deseo: 'Realizar prototipo para Empresa',
+    wish: 'Realizar prototipo para Empresa',
   },
 ];
 

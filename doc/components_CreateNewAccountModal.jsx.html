@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/CreateNewAccountModal.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/CreateNewAccountModal.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Stack,
+    TextField,
+} from '@mui/material'
+import PropTypes from 'prop-types'
+
+
+
+/** This is a description of the CreateNewAccountModal . */
+/**
+ * 
+ *  @fileoverview CreateNewAccountModal.jsx, botones para crear un nuevo deseo
+
+ *
+
+ * @version  2.2
+
+ *
+
+ * @author                 Fernando Caravaca &lt;info@fernandocaravaca.com>
+
+ * @copyright           fernandocaravaca.com
+
+ *
+
+ * @description
+
+ * En este componente encontramos el botón que permite al usuario crear e introducir nuevos deseos.
+
+ * Botones para crear un nuevo deseo
+ * @returns HTML with Buttons
+ */
+
+
+/**
+
+ * Función principal que mostrará el botón para crear un deseo
+
+ * 
+
+ * @return  {html}
+
+ */
+function CreateNewAccountModal({ open, columns, onClose, onSubmit }) {
+  /**
+ * setValues
+ * @constant setValues
+ * @type {function}
+ * @default useState
+ * @return acc
+ */
+    const [values, setValues] = useState(() =>
+        columns.reduce((acc, column) => {
+            acc[column.accessorKey ?? ''] = ''
+            return acc
+        }, {})
+    )
+/**
+ * handleSubmit
+ * @constant handleSubmit
+ * @type {function}
+ * @default tableData
+ * @description Con esta constante enviamos los resultados y cerramos el popUp de añadir
+ */
+    const handleSubmit = () => {
+        // put your validation logic here
+        onSubmit(values)
+        onClose()
+    }
+
+    return (
+        &lt;Dialog open={open}>
+            &lt;DialogTitle textAlign="center">Create New Account&lt;/DialogTitle>
+            &lt;DialogContent>
+                &lt;form onSubmit={(e) => e.preventDefault()}>
+                    &lt;Stack
+                        sx={{
+                            width: '100%',
+                            minWidth: { xs: '300px', sm: '360px', md: '400px' },
+                            gap: '1.5rem',
+                        }}
+                    >
+                        {columns.map((column) => (
+                            &lt;TextField
+                                id="name"
+                                key={column.accessorKey}
+                                label={column.header}
+                                name={column.accessorKey}
+                                onChange={(e) =>
+                                    setValues({
+                                        ...values,
+                                        [e.target.name]: e.target.value,
+                                    })
+                                }
+                                onKeyUp={(event) => {
+                                    if (
+                                        event.key === 'Enter' &amp;&amp;
+                                        document.getElementById('name').value
+                                            .length > 0
+                                    ) {
+                                        handleSubmit()
+                                    }
+                                }}
+                            />
+                        ))}
+                    &lt;/Stack>
+                &lt;/form>
+            &lt;/DialogContent>
+            &lt;DialogActions sx={{ p: '1.25rem' }}>
+                &lt;Button onClick={onClose}>Cancel&lt;/Button>
+                &lt;Button
+                    color="secondary"
+                    onClick={handleSubmit}
+                    variant="contained"
+                >
+                    Create New Wish
+                &lt;/Button>
+            &lt;/DialogActions>
+        &lt;/Dialog>
+    )
+}
+
+CreateNewAccountModal.propTypes = {
+    columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    open: PropTypes.bool,
+    onClose: PropTypes.func,
+    onSubmit: PropTypes.func,
+}
+
+CreateNewAccountModal.defaultProps = {
+    columns: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    open: PropTypes.bool,
+    onClose: PropTypes.func,
+    onSubmit: PropTypes.func,
+}
+
+export default CreateNewAccountModal
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#columns">columns</a></li><li><a href="global.html#CreateNewAccountModal">CreateNewAccountModal</a></li><li><a href="global.html#csvExporter">csvExporter</a></li><li><a href="global.html#csvOptions">csvOptions</a></li><li><a href="global.html#DeleteAccountModal">DeleteAccountModal</a></li><li><a href="global.html#EditAccountModal">EditAccountModal</a></li><li><a href="global.html#Example">Example</a></li><li><a href="global.html#ExportButtons">ExportButtons</a></li><li><a href="global.html#getLocalItems">getLocalItems</a></li><li><a href="global.html#handleCreateNewRow">handleCreateNewRow</a></li><li><a href="global.html#handleDeleteRow">handleDeleteRow</a></li><li><a href="global.html#handleExportRows">handleExportRows</a></li><li><a href="global.html#handleSaveRowEdits">handleSaveRowEdits</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#setRowSelection">setRowSelection</a></li><li><a href="global.html#setTableData">setTableData</a></li><li><a href="global.html#setValues">setValues</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.11</a> on Mon Nov 28 2022 23:27:14 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

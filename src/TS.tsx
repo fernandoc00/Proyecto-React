@@ -1,5 +1,5 @@
 export type Person = {
-  deseo: string;
+  wish: string;
 };
 
 
